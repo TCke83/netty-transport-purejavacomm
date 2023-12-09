@@ -10,6 +10,8 @@ import io.netty.channel.oio.OioEventLoopGroup;
 import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import purejavacomm.CommPortIdentifier;
 
 import java.util.Enumeration;
@@ -36,6 +38,7 @@ public final class PureJavaCommClient {
                         @Override
                         public void initChannel(PureJavaCommChannel ch) throws Exception {
                             ch.pipeline().addLast(
+                                    new LoggingHandler(LogLevel.INFO),
                                     new LineBasedFrameDecoder(32768),
                                     new StringEncoder(),
                                     new StringDecoder(),
@@ -44,7 +47,7 @@ public final class PureJavaCommClient {
                         }
                     });
 
-            ChannelFuture f = b.connect(new PureJavaCommDeviceAddress("/dev/ttyS0")).sync();
+            ChannelFuture f = b.connect(new PureJavaCommDeviceAddress("/dev/tty.usbserial-14620")).sync();
             
             f.channel().closeFuture().sync();
         } finally {
